@@ -1,6 +1,6 @@
 ﻿namespace Übertragung_BDE
 {
-    partial class Form1
+    partial class Hauptseite
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,12 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            btnEinstellungen = new Button();
+            SuspendLayout();
+            // 
+            // btnEinstellungen
+            // 
+            btnEinstellungen.Location = new Point(833, 293);
+            btnEinstellungen.Name = "btnEinstellungen";
+            btnEinstellungen.Size = new Size(101, 34);
+            btnEinstellungen.TabIndex = 0;
+            btnEinstellungen.Text = "Einstellungen";
+            btnEinstellungen.UseVisualStyleBackColor = true;
+            btnEinstellungen.Click += Btn_Einstellungen_Click;
+            // 
+            // Hauptseite
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(964, 351);
+            Controls.Add(btnEinstellungen);
+            Name = "Hauptseite";
+            Text = "Form1";
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private Button btnEinstellungen;
     }
 }
