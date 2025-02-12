@@ -26,36 +26,36 @@ namespace Übertragung_BDE.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string IpAddresseSPS {
+        public string IpAdresseSPS {
             get {
-                return ((string)(this["IpAddresseSPS"]));
+                return ((string)(this["IpAdresseSPS"]));
             }
             set {
-                this["IpAddresseSPS"] = value;
+                this["IpAdresseSPS"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int portSPS {
+        public string PortSPS {
             get {
-                return ((int)(this["portSPS"]));
+                return ((string)(this["PortSPS"]));
             }
             set {
-                this["portSPS"] = value;
+                this["PortSPS"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string IpAddresseDB {
+        public string IpAdresseDB {
             get {
-                return ((string)(this["IpAddresseDB"]));
+                return ((string)(this["IpAdresseDB"]));
             }
             set {
-                this["IpAddresseDB"] = value;
+                this["IpAdresseDB"] = value;
             }
         }
         

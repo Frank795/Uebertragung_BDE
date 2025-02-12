@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Übertragung_BDE
+﻿namespace Übertragung_BDE
 {
     using System;
     using System.Net;
@@ -25,9 +19,10 @@ namespace Übertragung_BDE
 
         public event Action<string> DataReceived = delegate { };
         public event Action<bool> ConnectionStatusChanged = delegate { };
+        public event Action<string> MessageSent = delegate { };
 
-        private string allowedIpAddress = "192.168.1.100"; // Standard-IP, später über Settings setzbar
-        private readonly int port = 1024;
+        private string allowedIpAddress = Properties.Settings.Default.IpAdresseSPS; // Standard-IP, später über Settings setzbar
+        private  int port = Convert.ToInt32(Properties.Settings.Default.PortSPS);
 
         private TcpClientSingleton() { }
 
@@ -46,19 +41,22 @@ namespace Übertragung_BDE
         public void StartServer()
         {
             if (isRunning) return;
-
+          
             try
             {
-                tcpListener = new TcpListener(IPAddress.Parse(allowedIpAddress), port);
+
+                tcpListener = new TcpListener(IPAddress.Any, port);
                 tcpListener.Start();
                 isRunning = true;
                 ConnectionStatusChanged?.Invoke(true);
                 Task.Run(() => ListenForClients());
+                MessageBox.Show($"Server gestartet und hört auf {allowedIpAddress} : {port}.");
+
             }
             catch (Exception ex)
             {
                 ConnectionStatusChanged?.Invoke(false);
-                Console.WriteLine($"Fehler beim Starten des Servers: {ex.Message}");
+                MessageBox.Show($"Fehler beim Starten des Servers: {ex.Message}");
             }
         }
 
@@ -83,14 +81,17 @@ namespace Übertragung_BDE
         private async void ReceiveData()
         {
             byte[] buffer = new byte[1024];
+
             while (client.Connected)
             {
                 try
                 {
-                    int bytesRead = await stream.ReadAsync(buffer);
-                    if (bytesRead == 0) break;
+                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0) break; // Verbindung geschlossen
 
                     string receivedMessage = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                    // Event auslösen, damit die UI reagieren kann
                     DataReceived?.Invoke(receivedMessage);
                 }
                 catch (Exception ex)
@@ -99,7 +100,6 @@ namespace Übertragung_BDE
                     break;
                 }
             }
-            ConnectionStatusChanged?.Invoke(false);
         }
 
         public void SendMessage(string message)
@@ -108,6 +108,14 @@ namespace Übertragung_BDE
             {
                 byte[] data = Encoding.ASCII.GetBytes(message);
                 stream.Write(data, 0, data.Length);
+                stream.Flush();
+
+                // Event auslösen
+                MessageSent?.Invoke(message);
+
+
+
+
             }
         }
 

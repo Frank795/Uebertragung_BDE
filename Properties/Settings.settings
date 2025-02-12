@@ -2,13 +2,13 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Übertragung_BDE.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="IpAddresseSPS" Type="System.String" Scope="User">
+    <Setting Name="IpAdresseSPS" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="portSPS" Type="System.Int32" Scope="User">
+    <Setting Name="PortSPS" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="IpAddresseDB" Type="System.String" Scope="User">
+    <Setting Name="IpAdresseDB" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BenutzerDB" Type="System.String" Scope="User">

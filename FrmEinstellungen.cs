@@ -17,7 +17,7 @@ namespace Übertragung_BDE
     public partial class FrmEinstellungen : Form
     {
 
-        readonly bool isInitializing = false;
+        bool isInitializing = false;
         bool änderung = false;
         bool fehler = false;
 
@@ -25,36 +25,34 @@ namespace Übertragung_BDE
         {
             isInitializing = true;
             InitializeComponent();
-            txtSPSIp.Text = Properties.Settings.Default.IpAddresseDB;
+            txtSqlIp.Text = Properties.Settings.Default.IpAdresseDB;
             txtSqlPort.Text = Properties.Settings.Default.PortDB;
             txtSqlBenutzer.Text = Properties.Settings.Default.BenutzerDB;
             txtSqlPw.Text = Properties.Settings.Default.PasswortDB;
             txtSqlDb.Text = Properties.Settings.Default.Datenbankname;
-
-            txtSqlIP.Text = Properties.Settings.Default.IpAddresseSPS;
-            txtSPSIp.Text = $"{Properties.Settings.Default.portSPS}";
-
+            txtSPSIp.Text = Properties.Settings.Default.IpAdresseSPS;
+            txtSPSPort.Text = $"{Properties.Settings.Default.PortSPS}";
             isInitializing = false;
         }
 
 
-     
-   
+
+
         private void TxtSqlSrv_TextChanged(object sender, EventArgs e)
         {
             if (isInitializing) return;
-            if (txtSqlIP.Text != $"{Properties.Settings.Default.IpAddresseDB}" || txtSqlIP.Text.Count(c => c == '.') != 3)
+            if (txtSqlIp.Text != $"{Properties.Settings.Default.IpAdresseDB}" || txtSqlIp.Text.Count(c => c == '.') != 3)
             {
-                bool success = IPAddress.TryParse(txtSqlIP.Text, out _);
-                if (!success || txtSqlIP.Text.Count(c => c == '.') != 3)
+                bool success = IPAddress.TryParse(txtSqlIp.Text, out _);
+                if (!success || txtSqlIp.Text.Count(c => c == '.') != 3)
                 {
-                    txtSqlIP.BackColor = Color.PaleVioletRed;
+                    txtSqlIp.BackColor = Color.PaleVioletRed;
                     änderung = true;
                     fehler = true;
                 }
                 else
                 {
-                    txtSqlIP.BackColor = Color.Khaki;
+                    txtSqlIp.BackColor = Color.Khaki;
                     änderung = true;
                     fehler = false;
                 }
@@ -63,13 +61,71 @@ namespace Übertragung_BDE
             {
                 änderung = false;
                 fehler = false;
-                txtSqlIP.BackColor = Color.White;
+                txtSqlIp.BackColor = Color.White;
             }
         }
-        private void TxtSqlSrv2_TextChanged(object sender, EventArgs e)
+        private void TxtSqlPort_TextChanged(object sender, EventArgs e)
         {
             if (isInitializing) return;
-            if (txtSPSIp.Text != $"{Settings.Default.SQL_Server2}")
+            if (txtSqlPort.Text != $"{Properties.Settings.Default.PortDB}")
+            {
+                if (int.TryParse(txtSqlPort.Text, out _))
+                {
+                    txtSqlPort.BackColor = Color.Khaki;
+                    änderung = true;
+                    fehler = false;
+                }
+                else
+                {
+                    txtSqlPort.BackColor = Color.PaleVioletRed;
+                    änderung = true;
+                    fehler = true;
+                }
+            }
+            else
+            {
+                txtSqlPort.BackColor = Color.White;
+                änderung = false;
+                fehler = false;
+
+            }
+        }
+        private void TxtSqlBenutzer_TextChanged(object sender, EventArgs e)
+        {
+            if (isInitializing) return;
+            if (txtSqlBenutzer.Text != $"{Properties.Settings.Default.BenutzerDB}")
+            {
+                txtSqlBenutzer.BackColor = Color.Khaki;
+                änderung = true;
+            }
+            else
+            {
+                txtSqlBenutzer.BackColor = Color.White;
+                änderung = false;
+            }
+        }
+
+        // Passwort FEHLT NOCH
+
+
+        private void TxtSqlDb_TextChanged(object sender, EventArgs e)
+        {
+            if (isInitializing) return;
+            if (txtSqlDb.Text != $"{Properties.Settings.Default.Datenbankname}")
+            {
+                txtSqlBenutzer.BackColor = Color.Khaki;
+                änderung = true;
+            }
+            else
+            {
+                txtSqlBenutzer.BackColor = Color.White;
+                änderung = false;
+            }
+        }
+        private void TxtSPSIp_TextChanged(object sender, EventArgs e)
+        {
+            if (isInitializing) return;
+            if (txtSPSIp.Text != $"{Properties.Settings.Default.IpAdresseSPS}")
             {
                 bool success = IPAddress.TryParse(txtSPSIp.Text, out _);
                 if (!success || txtSPSIp.Text.Count(c => c == '.') != 3)
@@ -92,40 +148,10 @@ namespace Übertragung_BDE
                 txtSPSIp.BackColor = Color.White;
             }
         }
-        private void TxtSqlDb_TextChanged(object sender, EventArgs e)
+        private void TxtSPSPort_TextChanged(object sender, EventArgs e)
         {
             if (isInitializing) return;
-            if (txtSqlDb.Text != $"{Settings.Default.SQL_Datenbank}")
-            {
-                txtSqlDb.BackColor = Color.PaleVioletRed;
-                änderung = true;
-                fehler = true;
-            }
-            else
-            {
-                txtSqlDb.BackColor = Color.Khaki;
-                änderung = true;
-                fehler = false;
-            }
-        }
-        private void TxtSqlUser_TextChanged(object sender, EventArgs e)
-        {
-            if (isInitializing) return;
-            if (txtSqlBenutzer.Text != $"{Settings.Default.SQL_User}")
-            {
-                txtSqlBenutzer.BackColor = Color.Khaki;
-                änderung = true;
-            }
-            else
-            {
-                txtSqlBenutzer.BackColor = Color.White;
-                änderung = false;
-            }
-        }
-        private void TxtSqlPort_TextChanged(object sender, EventArgs e)
-        {
-            if (isInitializing) return;
-            if (txtSqlPort.Text != $"{Settings.Default.SQL_Port}")
+            if (txtSqlPort.Text != $"{Properties.Settings.Default.PortDB}")
             {
                 if (int.TryParse(txtSqlPort.Text, out _))
                 {
@@ -135,7 +161,7 @@ namespace Übertragung_BDE
                 }
                 else
                 {
-                    txtSqlPort.BackColor = Color.Khaki;
+                    txtSqlPort.BackColor = Color.PaleVioletRed;
                     änderung = true;
                     fehler = true;
                 }
@@ -148,6 +174,7 @@ namespace Übertragung_BDE
 
             }
         }
+
         private void BtnAbbrechen_Click(object sender, EventArgs e)
         {
             if (änderung)
@@ -158,18 +185,22 @@ namespace Übertragung_BDE
                 else return;
             }
             else Close();
+            Close();
         }
         private void BtnSpeichern_Click(object sender, EventArgs e)
         {
             if (änderung && !fehler)
             {
-                if (txtSqlIP.Text != $"{Settings.Default.SQL_Server}") Settings.Default.SQL_Server= txtSqlIP.Text;
-                if (txtSPSIp.Text != $"{Settings.Default.SQL_Server2}") Settings.Default.SQL_Server2 = txtSPSIp.Text;
-                if (txtSqlPort.Text != $"{Settings.Default.SQL_Port}") Settings.Default.SQL_Port = txtSqlPort.Text;
-                if (txtSqlBenutzer.Text != $"{Settings.Default.SQL_User}") Settings.Default.SQL_User = txtSqlBenutzer.Text;
-                if (txtSqlDb.Text != $"{Settings.Default.SQL_Datenbank}") Settings.Default.SQL_Datenbank = txtSqlDb.Text;
-                Settings.Default.IsTest = cbxTest.Checked;
-                Settings.Default.Save();
+                if (txtSqlIp.Text != $"{Properties.Settings.Default.IpAdresseDB}") Properties.Settings.Default.IpAdresseDB = txtSqlIp.Text;
+                if (txtSqlPort.Text != $"{Properties.Settings.Default.PortDB}") Properties.Settings.Default.PortDB = txtSqlPort.Text;
+                if (txtSqlBenutzer.Text != $"{Properties.Settings.Default.BenutzerDB}") Properties.Settings.Default.BenutzerDB = txtSqlBenutzer.Text;
+                if (txtSqlDb.Text != $"{Properties.Settings.Default.Datenbankname}") Properties.Settings.Default.Datenbankname = txtSqlDb.Text;
+
+                if (txtSPSIp.Text != $"{Properties.Settings.Default.IpAdresseSPS}") Properties.Settings.Default.IpAdresseSPS = txtSPSIp.Text;
+                if (txtSPSPort.Text != $"{Properties.Settings.Default.PortSPS}") Properties.Settings.Default.PortSPS =  txtSPSPort.Text;
+
+
+                Properties.Settings.Default.Save();
 
                 MessageBox.Show("Änderungen wurden gespeichert, Neustart erforderlich");
                 Close();
@@ -180,7 +211,8 @@ namespace Übertragung_BDE
             }
             else Close();
         }
-    
+
+ 
     }
 
 

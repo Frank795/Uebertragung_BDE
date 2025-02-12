@@ -34,7 +34,7 @@
             lblSqlPw = new Label();
             lblSqlDb = new Label();
             lblIpSPS = new Label();
-            txtSqlIP = new TextBox();
+            txtSqlIp = new TextBox();
             txtSqlPort = new TextBox();
             txtSqlBenutzer = new TextBox();
             txtSqlPw = new TextBox();
@@ -106,15 +106,15 @@
             lblIpSPS.TabIndex = 5;
             lblIpSPS.Text = "SPS IP Addresse";
             // 
-            // txtSqlIP
+            // txtSqlIp
             // 
-            txtSqlIP.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold);
-            txtSqlIP.Location = new Point(152, 27);
-            txtSqlIP.Margin = new Padding(3, 2, 3, 2);
-            txtSqlIP.Name = "txtSqlIP";
-            txtSqlIP.Size = new Size(168, 26);
-            txtSqlIP.TabIndex = 6;
-            txtSqlIP.TextChanged += TxtSqlSrv_TextChanged;
+            txtSqlIp.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold);
+            txtSqlIp.Location = new Point(152, 27);
+            txtSqlIp.Margin = new Padding(3, 2, 3, 2);
+            txtSqlIp.Name = "txtSqlIp";
+            txtSqlIp.Size = new Size(168, 26);
+            txtSqlIp.TabIndex = 6;
+            txtSqlIp.TextChanged += TxtSqlSrv_TextChanged;
             // 
             // txtSqlPort
             // 
@@ -134,7 +134,7 @@
             txtSqlBenutzer.Name = "txtSqlBenutzer";
             txtSqlBenutzer.Size = new Size(168, 26);
             txtSqlBenutzer.TabIndex = 8;
-            txtSqlBenutzer.TextChanged += TxtSqlUser_TextChanged;
+            txtSqlBenutzer.TextChanged += TxtSqlBenutzer_TextChanged;
             // 
             // txtSqlPw
             // 
@@ -144,7 +144,6 @@
             txtSqlPw.Name = "txtSqlPw";
             txtSqlPw.Size = new Size(168, 26);
             txtSqlPw.TabIndex = 9;
-            txtSqlPw.Click += TxtSqlPw_Click;
             // 
             // txtSqlDb
             // 
@@ -164,7 +163,7 @@
             txtSPSIp.Name = "txtSPSIp";
             txtSPSIp.Size = new Size(168, 26);
             txtSPSIp.TabIndex = 11;
-            txtSPSIp.TextChanged += TxtSqlSrv2_TextChanged;
+            txtSPSIp.TextChanged += TxtSPSIp_TextChanged;
             // 
             // btnSpeichern
             // 
@@ -208,6 +207,7 @@
             txtSPSPort.Name = "txtSPSPort";
             txtSPSPort.Size = new Size(168, 26);
             txtSPSPort.TabIndex = 17;
+            txtSPSPort.TextChanged += TxtSPSPort_TextChanged;
             // 
             // FrmEinstellungen
             // 
@@ -216,7 +216,7 @@
             ClientSize = new Size(354, 301);
             Controls.Add(label1);
             Controls.Add(txtSPSPort);
-            Controls.Add(txtSqlIP);
+            Controls.Add(txtSqlIp);
             Controls.Add(btnAbbrechen);
             Controls.Add(lblSqlIP);
             Controls.Add(txtSqlBenutzer);
@@ -248,7 +248,7 @@
         private Label lblSqlPw;
         private Label lblSqlDb;
         private Label lblIpSPS;
-        private TextBox txtSqlIP;
+        private TextBox txtSqlIp;
         private TextBox txtSqlPort;
         private TextBox txtSqlBenutzer;
         private TextBox txtSqlPw;
