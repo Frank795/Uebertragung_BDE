@@ -12,10 +12,10 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BenutzerDB" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">bde</Value>
     </Setting>
     <Setting Name="PasswortDB" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">123456</Value>
     </Setting>
     <Setting Name="Datenbankname" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

@@ -101,6 +101,21 @@
                 }
             }
         }
+        public async Task<string> WaitForResponse()
+        {
+            var tcs = new TaskCompletionSource<string>();
+
+            void Handler(string data)
+            {
+                tcs.TrySetResult(data);
+                DataReceived -= Handler; // Event abmelden nach Empfang
+            }
+
+            DataReceived += Handler; // Event registrieren
+
+            return await tcs.Task; // Warten, bis die SPS eine Antwort sendet
+        }
+
 
         public void SendMessage(string message)
         {

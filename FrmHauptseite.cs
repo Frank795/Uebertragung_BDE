@@ -1,13 +1,20 @@
+using System.Data;
+using System.Threading;
+
 namespace Übertragung_BDE
 {
     public partial class FrmHauptseite : Form
     {
+        private CancellationTokenSource? _cancellationTokenSource;
+        private bool antwortSPSerhalten = false;
+        private string letzteNachrichtSPS = "";
+        private bool datenSPSerhalten = false;
         public FrmHauptseite()
         {
             InitializeComponent();
-            TcpClientSingleton.Instance.StartServer();
+            //TcpClientSingleton.Instance.StartServer();
         }
-
+       
 
         private void Btn_Einstellungen_Click(object sender, EventArgs e)
         {
@@ -28,13 +35,11 @@ namespace Übertragung_BDE
         private void Hauptseite_Load(object sender, EventArgs e)
         {
             TcpClientSingleton.Instance.DataReceived += NeueDatenEingegangen;
-            TcpClientSingleton.Instance.StartServer();
-
-
             TcpClientSingleton.Instance.MessageSent += AddSentMessageToListBox;
             TcpClientSingleton.Instance.StartServer();
+            _cancellationTokenSource = new CancellationTokenSource();
+            Task.Run(() => AutomatischerProzess(_cancellationTokenSource.Token));
         }
-
         private void NeueDatenEingegangen(string message)
         {
             if (listEmpfang.InvokeRequired)
@@ -47,22 +52,23 @@ namespace Übertragung_BDE
                 ListViewItem item = new ListViewItem(currentTime);
                 item.SubItems.Add(message);
                 listEmpfang.Items.Insert(0, item); // Neueste Meldung oben einfügen
-
                 if (message.Length == 2)
                 {
-                    MessageBox.Show("Quittung");
+                    antwortSPSerhalten = true;
+                    letzteNachrichtSPS = message;
+
                 }
                 else
                 {
                     MessageBox.Show($"{message.Length}");
+                    datenSPSerhalten = true;
+                    letzteNachrichtSPS = message;
                 }
                     
 
-                //VerarbeiteEingangsdaten(message);
+                
             }
         }
-
-
         private void AddSentMessageToListBox(string message)
         {
             if (listGesendet.InvokeRequired)
@@ -78,50 +84,132 @@ namespace Übertragung_BDE
 
             }
         }
-
-
-
-        private void VerarbeiteEingangsdaten(string message)
-        {
-            try
-            {
-                // Daten anhand von ';' splitten
-                var datenTeile = message.Split(' ');
-                var id = datenTeile[0].Split(' ')[1];
-                var ba = datenTeile[1].Split(' ')[1];
-                var ioSchuss = datenTeile[2].Split(' ')[1];
-                var nioSchuss = datenTeile[3].Split(' ')[1];
-
-               // Console.WriteLine($"Empfangen -> ID: {id}, Wert: {wert}, Status: {status}");
-
-                // Daten in die DB schreiben
-               // SpeichereInDatenbank(id, wert, status);
-
-                // Antwort an SPS senden
-               // AntwortAnSPS($"Bestätigung: ID {id} empfangen");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fehler beim Verarbeiten der Nachricht: {ex.Message}");
-            }
-        }
-
-        private void DatenAbrufen()
-        {
-
-
-
-        }
-
         private void Button1_Click(object sender, EventArgs e)
         {
             TcpClientSingleton.Instance.SendMessage(txtSenden.Text);
         }
 
-        private void listGesendet_SelectedIndexChanged(object sender, EventArgs e)
-        {
 
+        private async Task AutomatischerProzess(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+
+                    // 1️⃣ DB prüfen & Steuerbefehl senden
+
+                    string query1 = " SELECT * from sgm ";
+                    DataTable anlagen = DbHelper.Instance.ExecuteSelectQuery(query1);
+
+                    foreach (DataRow row in anlagen.Rows)
+                    {
+                        string? id = row["id"].ToString(); 
+                        string? wertA = row["tr_soll"].ToString(); 
+                        string? wertB = row["tr_ist"].ToString(); 
+
+                        if (wertA != wertB)  // Prüfung ob gesteuert wird 
+                        {
+                            string steuerbefehl = $"10 {id} {wertA}";
+                            //MessageBox.Show($"{steuerbefehl}");
+                            TcpClientSingleton.Instance.SendMessage(steuerbefehl);
+
+                            // Warte auf Antwort der SPS mit Timeout
+                            antwortSPSerhalten = false;
+                            letzteNachrichtSPS = "";
+                            int toSteuern = 5000; // 5 Sekunden Timeout
+                            int zeitToSteuern = 0;
+                            while (!antwortSPSerhalten && zeitToSteuern < toSteuern)
+                            {
+                                Thread.Sleep(100); // 100ms warten
+                                zeitToSteuern += 100;
+                            }
+
+                            if (antwortSPSerhalten)
+                            {
+                                MessageBox.Show($"{letzteNachrichtSPS}");
+                                if (letzteNachrichtSPS == "01")
+                                {
+                                    // Datenbank updaten oder weiteren Schritt ausführen
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Fehler: Keine Antwort innerhalb der Zeit!");
+                            }
+
+
+
+                        }
+                    }
+                    // 2️⃣ Datenaustausch starten
+                    TcpClientSingleton.Instance.SendMessage("02");
+
+
+                    
+                    letzteNachrichtSPS = "";
+                    int toEingang = 15000; // 5 Sekunden Timeout
+                    int zeitToEingang = 0;
+                    while (!datenSPSerhalten && zeitToEingang < toEingang)
+                    {
+                        Thread.Sleep(100); // 100ms warten
+                        zeitToEingang += 100;
+                    }
+
+                    if (datenSPSerhalten)
+                    {
+                        MessageBox.Show($"{letzteNachrichtSPS}");
+                        if (letzteNachrichtSPS == "ENDE")
+                        {
+                            MessageBox.Show("Ende");
+                        }
+                        else
+                        {
+                            //SpeichereInDB(nachricht);
+                            MessageBox.Show("inDB Schreiben");
+                            datenSPSerhalten = false;
+                            TcpClientSingleton.Instance.SendMessage("01");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Fehler: Keine Antwort innerhalb der Zeit!");
+                    }
+
+
+                    // 3️⃣ Pause vor Neustart
+                    await Task.Delay(TimeSpan.FromSeconds(10), token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Fehler im Automatikprozess: {ex.Message}");
+                }
+            }
         }
+
+     
+
+
+      
+
+
+        private void FrmHauptseite_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _cancellationTokenSource?.Cancel();
+        }
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 }

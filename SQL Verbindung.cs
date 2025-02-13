@@ -60,7 +60,7 @@ namespace Übertragung_BDE
                 catch (Exception ex)
                 {
                     //Logging.ErrorLog(ex.Message);
-                    MessageBox.Show("Ein Fehler ist aufgetreten. Details wurden protokolliert.");
+                    MessageBox.Show($"Ein Fehler ist aufgetreten. Details wurden protokolliert. {ex.Message}" );
                     throw;
                 }
             }

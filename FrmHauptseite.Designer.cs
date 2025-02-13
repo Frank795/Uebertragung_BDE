@@ -117,7 +117,6 @@
             listGesendet.TabIndex = 5;
             listGesendet.UseCompatibleStateImageBehavior = false;
             listGesendet.View = View.Details;
-            listGesendet.SelectedIndexChanged += listGesendet_SelectedIndexChanged;
             // 
             // columnHeader1
             // 
