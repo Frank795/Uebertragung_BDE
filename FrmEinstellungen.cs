@@ -9,15 +9,15 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using TextBox = System.Windows.Forms.TextBox;
+
+
 
 namespace Übertragung_BDE
 {
     public partial class FrmEinstellungen : Form
     {
 
-        bool isInitializing = false;
+        readonly bool isInitializing = false;
         bool änderung = false;
         bool fehler = false;
 
@@ -197,7 +197,7 @@ namespace Übertragung_BDE
                 if (txtSqlDb.Text != $"{Properties.Settings.Default.Datenbankname}") Properties.Settings.Default.Datenbankname = txtSqlDb.Text;
 
                 if (txtSPSIp.Text != $"{Properties.Settings.Default.IpAdresseSPS}") Properties.Settings.Default.IpAdresseSPS = txtSPSIp.Text;
-                if (txtSPSPort.Text != $"{Properties.Settings.Default.PortSPS}") Properties.Settings.Default.PortSPS =  txtSPSPort.Text;
+                if (txtSPSPort.Text != $"{Properties.Settings.Default.PortSPS}") Properties.Settings.Default.PortSPS = txtSPSPort.Text;
 
 
                 Properties.Settings.Default.Save();
@@ -212,7 +212,10 @@ namespace Übertragung_BDE
             else Close();
         }
 
- 
+        private void FrmEinstellungen_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 
 
