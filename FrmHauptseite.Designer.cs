@@ -40,6 +40,7 @@
             columnHeader2 = new ColumnHeader();
             btnAutoStop = new Button();
             btnAutoStart = new Button();
+            btnBeenden = new Button();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -63,7 +64,7 @@
             btnSenden.TabIndex = 1;
             btnSenden.Text = "Senden";
             btnSenden.UseVisualStyleBackColor = true;
-            btnSenden.Click += Button1_Click;
+            btnSenden.Click += BtnTestMail_Click;
             // 
             // txtSenden
             // 
@@ -151,11 +152,23 @@
             btnAutoStart.UseVisualStyleBackColor = true;
             btnAutoStart.Click += BtnAutoStart_Click;
             // 
+            // btnBeenden
+            // 
+            btnBeenden.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnBeenden.Location = new Point(811, 242);
+            btnBeenden.Name = "btnBeenden";
+            btnBeenden.Size = new Size(94, 47);
+            btnBeenden.TabIndex = 8;
+            btnBeenden.Text = "Beenden";
+            btnBeenden.UseVisualStyleBackColor = true;
+            btnBeenden.Click += BtnBeenden_Click;
+            // 
             // FrmHauptseite
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(934, 311);
+            Controls.Add(btnBeenden);
             Controls.Add(btnAutoStart);
             Controls.Add(btnAutoStop);
             Controls.Add(listGesendet);
@@ -186,5 +199,6 @@
         private ColumnHeader columnHeader2;
         private Button btnAutoStop;
         private Button btnAutoStart;
+        private Button btnBeenden;
     }
 }

@@ -12,7 +12,7 @@ namespace Übertragung_BDE
     {
         public static string GetConnectionString()
         {                     
-            //string pass = PasswortEncrypt.Decrypt(AppConfig.SQL_Passwort);
+            //string pass = PasswortEncrypt.Decrypt(Properties.Settings.Default.PasswortDB);
             string pass = Properties.Settings.Default.PasswortDB;
             return $"server={Properties.Settings.Default.IpAdresseDB};" +
                    $"database={Properties.Settings.Default.Datenbankname};" +
@@ -66,7 +66,6 @@ namespace Übertragung_BDE
         public bool ExecuteNonQuery(string query, MySqlParameter[]? parameters = null)
         {
             int rowsAffected;
-
             using MySqlConnection connection = new(connectionString);
             try
             {
@@ -76,18 +75,14 @@ namespace Übertragung_BDE
                 {
                     command.Parameters.AddRange(parameters);
                 }
-
                 rowsAffected = command.ExecuteNonQuery();
                 return true; // Erfolg
             }
             catch (Exception ex)
             {
                 Logging.ErrorLog($" Fehler DB Änderung :{ex.Message}");
-                //  MessageBox.Show("Ein Fehler ist aufgetreten. Details wurden protokolliert.");
                 return false; // Fehler
             }
-
-            //return rowsAffected;
         }     
     }
 }

@@ -16,7 +16,7 @@ namespace Übertragung_BDE
         new(() => new E_Mail_versand());
         public static E_Mail_versand Instance => lazy.Value;
         private E_Mail_versand() { }
-        public void SendSimpleEmail(string subject, string body)
+        public static void SendSimpleEmail(string subject, string body)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("Dein Name", "deine-email@example.com"));
@@ -42,12 +42,14 @@ namespace Übertragung_BDE
                 MessageBox.Show($"Fehler beim Senden der E-Mail: {ex.Message}");
             }
         }
-        public void SendEmail(string[] empfaengerAdressen)
+        public static void SendEmail(string mailBetreff, string mailText)
         {
+            string empfaengerString = Properties.Settings.Default.MailEmpfaenger;
+            string[] empfaengerAdressen = empfaengerString.Split(';');
             var email = new MimeMessage();
 
             // Sender
-            email.From.Add(new MailboxAddress("Dein Name", "deine.email@example.com"));
+            email.From.Add(new MailboxAddress(Properties.Settings.Default.NameMailAbsender, Properties.Settings.Default.AdresseMailAbsender));
 
             // Empfänger (Mehrere Empfänger mit Semikolon getrennt)
             foreach (var empfaenger in empfaengerAdressen)
@@ -56,12 +58,12 @@ namespace Übertragung_BDE
             }
 
             // Betreff
-            email.Subject = "Test E-Mail";
+            email.Subject = mailBetreff;
 
             // Nachrichtentext
             var body = new TextPart("plain")
             {
-                Text = "Dies ist eine Testnachricht."
+                Text = mailText
             };
 
             email.Body = body;
@@ -70,17 +72,15 @@ namespace Übertragung_BDE
             {
                 using (var client = new MailKit.Net.Smtp.SmtpClient())
                 {
-                    client.Connect("smtp.example.com", 587, false);  // SMTP-Server und Port
-                    client.Authenticate("deine.email@example.com", "deinPasswort");
-
+                    client.Connect(Properties.Settings.Default.SmtpAdresse, Properties.Settings.Default.SmtpPort,true);  // SMTP-Server und Port
+                    client.Authenticate(Properties.Settings.Default.AdresseMailAbsender, Properties.Settings.Default.MailPasswort);
                     client.Send(email);
                     client.Disconnect(true);
-                }
-                Console.WriteLine("E-Mail wurde erfolgreich gesendet.");
+                };
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler beim Senden der E-Mail: {ex.Message}");
+                MessageBox.Show($"Fehler beim Senden der E-Mail: {ex.Message}");
             }
         }
 

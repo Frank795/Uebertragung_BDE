@@ -16,28 +16,32 @@ namespace Übertragung_BDE
 {
     public partial class FrmEinstellungen : Form
     {
-
         readonly bool isInitializing = false;
         bool änderung = false;
         bool fehler = false;
-
         public FrmEinstellungen()
         {
             isInitializing = true;
             InitializeComponent();
+            /// System / Standorteinstellungen 
+
+            /// SQL und DB Einstellungen
             txtSqlIp.Text = Properties.Settings.Default.IpAdresseDB;
             txtSqlPort.Text = Properties.Settings.Default.PortDB;
             txtSqlBenutzer.Text = Properties.Settings.Default.BenutzerDB;
             txtSqlPw.Text = Properties.Settings.Default.PasswortDB;
             txtSqlDb.Text = Properties.Settings.Default.Datenbankname;
             txtSPSIp.Text = Properties.Settings.Default.IpAdresseSPS;
-            txtSPSPort.Text = $"{Properties.Settings.Default.PortSPS}";
+            txtSPSPort.Text = Properties.Settings.Default.PortSPS;
+            /// Mail Einstellungen
+            txtMailAbsender.Text = Properties.Settings.Default.NameMailAbsender;
+            txtMailAdresse.Text = Properties.Settings.Default.AdresseMailAbsender;
+            txtMailPasswort.Text = Properties.Settings.Default.MailPasswort;
+            txtSmtpAdresse.Text = Properties.Settings.Default.SmtpAdresse;
+            txtSmtpPort.Text = $"{Properties.Settings.Default.SmtpPort}";
+            txtMailEmpfaenger.Text = Properties.Settings.Default.MailEmpfaenger;
             isInitializing = false;
         }
-
-
-
-
         private void TxtSqlSrv_TextChanged(object sender, EventArgs e)
         {
             if (isInitializing) return;
@@ -72,20 +76,20 @@ namespace Übertragung_BDE
                 if (int.TryParse(txtSqlPort.Text, out _))
                 {
                     txtSqlPort.BackColor = Color.Khaki;
-                    änderung = true;
+
                     fehler = false;
                 }
                 else
                 {
                     txtSqlPort.BackColor = Color.PaleVioletRed;
-                    änderung = true;
+
                     fehler = true;
                 }
             }
             else
             {
                 txtSqlPort.BackColor = Color.White;
-                änderung = false;
+
                 fehler = false;
 
             }
@@ -105,9 +109,24 @@ namespace Übertragung_BDE
             }
         }
 
-        // Passwort FEHLT NOCH
+        private void TxtSqlPw_Click(object sender, EventArgs e)
+        {
+            int minLength = 5; // Mindestlänge festlegen
+            FrmPasswortvergabe passwortForm = new(minLength,1, "Ändern");
+            passwortForm.Show();
+           
+        }
+        private void TxtMailPasswort_Click(object sender, EventArgs e)
+        {
+            int minLength = 5; // Mindestlänge festlegen
+            FrmPasswortvergabe passwortForm = new(minLength,2, "Ändern");
+            passwortForm.Show();
+        }
 
 
+
+
+        // Passwort verschlüsseln FEHLT NOCH
         private void TxtSqlDb_TextChanged(object sender, EventArgs e)
         {
             if (isInitializing) return;
@@ -174,9 +193,9 @@ namespace Übertragung_BDE
 
             }
         }
-
         private void BtnAbbrechen_Click(object sender, EventArgs e)
         {
+
             if (änderung)
             {
                 DialogResult dialogResult = MessageBox.Show(" Änderungen Verwerfen ??", "", MessageBoxButtons.YesNo);
@@ -189,33 +208,52 @@ namespace Übertragung_BDE
         }
         private void BtnSpeichern_Click(object sender, EventArgs e)
         {
-            if (änderung && !fehler)
+            int aktiverTabIndex = tabControl1.SelectedIndex;
+            if (aktiverTabIndex == 0)
             {
-                if (txtSqlIp.Text != $"{Properties.Settings.Default.IpAdresseDB}") Properties.Settings.Default.IpAdresseDB = txtSqlIp.Text;
-                if (txtSqlPort.Text != $"{Properties.Settings.Default.PortDB}") Properties.Settings.Default.PortDB = txtSqlPort.Text;
-                if (txtSqlBenutzer.Text != $"{Properties.Settings.Default.BenutzerDB}") Properties.Settings.Default.BenutzerDB = txtSqlBenutzer.Text;
-                if (txtSqlDb.Text != $"{Properties.Settings.Default.Datenbankname}") Properties.Settings.Default.Datenbankname = txtSqlDb.Text;
-
-                if (txtSPSIp.Text != $"{Properties.Settings.Default.IpAdresseSPS}") Properties.Settings.Default.IpAdresseSPS = txtSPSIp.Text;
-                if (txtSPSPort.Text != $"{Properties.Settings.Default.PortSPS}") Properties.Settings.Default.PortSPS = txtSPSPort.Text;
 
 
+            }// Systemeinstellung
+            else if (aktiverTabIndex == 1)
+            {
+                if (!fehler)
+                {
+                    if (txtSqlIp.Text != $"{Properties.Settings.Default.IpAdresseDB}") Properties.Settings.Default.IpAdresseDB = txtSqlIp.Text;
+                    if (txtSqlPort.Text != $"{Properties.Settings.Default.PortDB}") Properties.Settings.Default.PortDB = txtSqlPort.Text;
+                    if (txtSqlBenutzer.Text != $"{Properties.Settings.Default.BenutzerDB}") Properties.Settings.Default.BenutzerDB = txtSqlBenutzer.Text;
+                    if (txtSqlDb.Text != $"{Properties.Settings.Default.Datenbankname}") Properties.Settings.Default.Datenbankname = txtSqlDb.Text;
+                    if (txtSPSIp.Text != $"{Properties.Settings.Default.IpAdresseSPS}") Properties.Settings.Default.IpAdresseSPS = txtSPSIp.Text;
+                    if (txtSPSPort.Text != $"{Properties.Settings.Default.PortSPS}") Properties.Settings.Default.PortSPS = txtSPSPort.Text;
+                    Properties.Settings.Default.Save();
+                    MessageBox.Show("Änderungen wurden gespeichert, Neustart erforderlich");
+                    Close();
+                }
+                else if (fehler)
+                {
+                    MessageBox.Show("Bitte erst die Fehler beseitigen!");
+                }
+                else Close();
+            }// Einstellung DB und SPS
+            else if (aktiverTabIndex == 2)
+            {
+                if (txtMailAbsender.Text != $"{Properties.Settings.Default.NameMailAbsender}") Properties.Settings.Default.NameMailAbsender = txtMailAbsender.Text;
+                if (txtMailAdresse.Text != $"{Properties.Settings.Default.AdresseMailAbsender}") Properties.Settings.Default.AdresseMailAbsender = txtMailAdresse.Text;
+                if (txtMailPasswort.Text != $"{Properties.Settings.Default.MailPasswort}") Properties.Settings.Default.MailPasswort = txtMailPasswort.Text;
+                if (txtSmtpAdresse.Text != $"{Properties.Settings.Default.SmtpAdresse}") Properties.Settings.Default.SmtpAdresse = txtSmtpAdresse.Text;
+                if (txtSmtpPort.Text != $"{Properties.Settings.Default.SmtpPort}") Properties.Settings.Default.SmtpPort = Convert.ToInt32(txtSmtpPort.Text);
+                if (txtMailEmpfaenger.Text != $"{Properties.Settings.Default.MailEmpfaenger}") Properties.Settings.Default.MailEmpfaenger = txtMailEmpfaenger.Text;
                 Properties.Settings.Default.Save();
-
                 MessageBox.Show("Änderungen wurden gespeichert, Neustart erforderlich");
                 Close();
-            }
-            else if (änderung && fehler)
-            {
-                MessageBox.Show("Bitte erst die Fehler beseitigen!");
-            }
-            else Close();
-        }
 
-        private void FrmEinstellungen_Load(object sender, EventArgs e)
+            }// Einstellung Mail
+        }
+        private void BtnTestMail_Click(object sender, EventArgs e)
         {
-
+            E_Mail_versand.SendEmail("Testmail", "Das ist ein Test der Mailfunktion");
         }
+
+      
     }
 
 
