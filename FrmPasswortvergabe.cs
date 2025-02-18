@@ -19,7 +19,7 @@ namespace Übertragung_BDE
         readonly int minPasswordLength = 1;
         readonly int verschTyp;
         readonly string userForm = "";
-  
+        public string? Passwort { get; private set; }
 
         public FrmPasswortvergabe(int minLength, int vTyp, string mode, string? user = null)
         {
@@ -65,7 +65,7 @@ namespace Übertragung_BDE
             {
                 // Passwort setzen und Form schließen
                 string encryptedPassword = PasswortEncrypt.Encrypt(password1);
-                Properties.Settings.Default.PW1 = encryptedPassword;
+                Properties.Settings.Default.PasswortDB = encryptedPassword;
                 Properties.Settings.Default.Save();
                 //  Logging.Instance.Log("0", "AP", "Datenbankpasswort geändert");
                 DialogResult = DialogResult.OK; // Signalisiert Erfolg
@@ -75,7 +75,7 @@ namespace Übertragung_BDE
             {
                 // Passwort setzen und Form schließen
                 string encryptedPassword = PasswortEncrypt.Encrypt(password1);
-                Properties.Settings.Default.PW2 = encryptedPassword;
+                Properties.Settings.Default.MailPasswort = encryptedPassword;
                 Properties.Settings.Default.Save();
                 //  Logging.Instance.Log("0", "AP", "Datenbankpasswort geändert");
                 DialogResult = DialogResult.OK; // Signalisiert Erfolg

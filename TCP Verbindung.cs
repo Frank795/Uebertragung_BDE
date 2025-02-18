@@ -18,7 +18,7 @@
         public event Action<bool> ConnectionStatusChanged = delegate { };
         public event Action<string> MessageSent = delegate { };
         private string IpAddresseSPS = Properties.Settings.Default.IpAdresseSPS; 
-        private  int port = Convert.ToInt32(Properties.Settings.Default.PortSPS);
+        private readonly int port = Convert.ToInt32(Properties.Settings.Default.PortSPS);
         private TcpClientSingleton() { }
         public static TcpClientSingleton Instance
         {
@@ -89,7 +89,7 @@
             {
                 try
                 {
-                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                    int bytesRead = await stream.ReadAsync(buffer);
                     if (bytesRead == 0) break; // Verbindung geschlossen
                     string receivedMessage = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                     DataReceived?.Invoke(receivedMessage);

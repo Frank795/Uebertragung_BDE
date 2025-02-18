@@ -73,7 +73,7 @@ namespace Übertragung_BDE
                 using (var client = new MailKit.Net.Smtp.SmtpClient())
                 {
                     client.Connect(Properties.Settings.Default.SmtpAdresse, Properties.Settings.Default.SmtpPort,true);  // SMTP-Server und Port
-                    client.Authenticate(Properties.Settings.Default.AdresseMailAbsender, Properties.Settings.Default.MailPasswort);
+                    client.Authenticate(Properties.Settings.Default.AdresseMailAbsender, PasswortEncrypt.Decrypt(Properties.Settings.Default.MailPasswort));
                     client.Send(email);
                     client.Disconnect(true);
                 };

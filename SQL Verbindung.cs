@@ -12,8 +12,8 @@ namespace Übertragung_BDE
     {
         public static string GetConnectionString()
         {                     
-            //string pass = PasswortEncrypt.Decrypt(Properties.Settings.Default.PasswortDB);
-            string pass = Properties.Settings.Default.PasswortDB;
+            string pass = PasswortEncrypt.Decrypt(Properties.Settings.Default.PasswortDB);
+            //string pass = Properties.Settings.Default.PasswortDB;
             return $"server={Properties.Settings.Default.IpAdresseDB};" +
                    $"database={Properties.Settings.Default.Datenbankname};" +
                    $"port={Properties.Settings.Default.PortDB};" +

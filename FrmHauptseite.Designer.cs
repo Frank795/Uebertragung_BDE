@@ -58,6 +58,7 @@
             // btnSenden
             // 
             btnSenden.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnSenden.ForeColor = SystemColors.ControlText;
             btnSenden.Location = new Point(48, 88);
             btnSenden.Name = "btnSenden";
             btnSenden.Size = new Size(94, 23);
@@ -76,9 +77,11 @@
             // 
             // groupBox1
             // 
+            groupBox1.BackColor = SystemColors.ScrollBar;
             groupBox1.Controls.Add(txtSenden);
             groupBox1.Controls.Add(btnSenden);
-            groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            groupBox1.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            groupBox1.ForeColor = Color.CornflowerBlue;
             groupBox1.Location = new Point(715, 31);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(190, 134);

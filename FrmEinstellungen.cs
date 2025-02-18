@@ -23,20 +23,28 @@ namespace Übertragung_BDE
         {
             isInitializing = true;
             InitializeComponent();
-            /// System / Standorteinstellungen 
+            // System / Standorteinstellungen 
+            txtWartezeit.Text = $"{Properties.Settings.Default.Wartezeit}";
+            txtListeneinträge.Text = $"{Properties.Settings.Default.Listenleinträge}";
 
-            /// SQL und DB Einstellungen
+
+
+
+
+
+
+            // SQL und DB Einstellungen
             txtSqlIp.Text = Properties.Settings.Default.IpAdresseDB;
             txtSqlPort.Text = Properties.Settings.Default.PortDB;
             txtSqlBenutzer.Text = Properties.Settings.Default.BenutzerDB;
-            txtSqlPw.Text = Properties.Settings.Default.PasswortDB;
+            txtSqlPw.Text = "******"; //Properties.Settings.Default.PasswortDB;
             txtSqlDb.Text = Properties.Settings.Default.Datenbankname;
             txtSPSIp.Text = Properties.Settings.Default.IpAdresseSPS;
             txtSPSPort.Text = Properties.Settings.Default.PortSPS;
-            /// Mail Einstellungen
+            // Mail Einstellungen
             txtMailAbsender.Text = Properties.Settings.Default.NameMailAbsender;
             txtMailAdresse.Text = Properties.Settings.Default.AdresseMailAbsender;
-            txtMailPasswort.Text = Properties.Settings.Default.MailPasswort;
+            txtMailPasswort.Text = "******"; // Properties.Settings.Default.MailPasswort;
             txtSmtpAdresse.Text = Properties.Settings.Default.SmtpAdresse;
             txtSmtpPort.Text = $"{Properties.Settings.Default.SmtpPort}";
             txtMailEmpfaenger.Text = Properties.Settings.Default.MailEmpfaenger;
@@ -195,7 +203,6 @@ namespace Übertragung_BDE
         }
         private void BtnAbbrechen_Click(object sender, EventArgs e)
         {
-
             if (änderung)
             {
                 DialogResult dialogResult = MessageBox.Show(" Änderungen Verwerfen ??", "", MessageBoxButtons.YesNo);
@@ -211,7 +218,10 @@ namespace Übertragung_BDE
             int aktiverTabIndex = tabControl1.SelectedIndex;
             if (aktiverTabIndex == 0)
             {
-
+                if (txtWartezeit.Text != $"{Properties.Settings.Default.Wartezeit}") Properties.Settings.Default.Wartezeit = Convert.ToInt32(txtWartezeit.Text);
+                if (txtListeneinträge.Text != $"{Properties.Settings.Default.Listenleinträge}") Properties.Settings.Default.Listenleinträge = Convert.ToInt32(txtListeneinträge.Text);
+                Properties.Settings.Default.Save();
+                Close();
 
             }// Systemeinstellung
             else if (aktiverTabIndex == 1)
@@ -238,7 +248,6 @@ namespace Übertragung_BDE
             {
                 if (txtMailAbsender.Text != $"{Properties.Settings.Default.NameMailAbsender}") Properties.Settings.Default.NameMailAbsender = txtMailAbsender.Text;
                 if (txtMailAdresse.Text != $"{Properties.Settings.Default.AdresseMailAbsender}") Properties.Settings.Default.AdresseMailAbsender = txtMailAdresse.Text;
-                if (txtMailPasswort.Text != $"{Properties.Settings.Default.MailPasswort}") Properties.Settings.Default.MailPasswort = txtMailPasswort.Text;
                 if (txtSmtpAdresse.Text != $"{Properties.Settings.Default.SmtpAdresse}") Properties.Settings.Default.SmtpAdresse = txtSmtpAdresse.Text;
                 if (txtSmtpPort.Text != $"{Properties.Settings.Default.SmtpPort}") Properties.Settings.Default.SmtpPort = Convert.ToInt32(txtSmtpPort.Text);
                 if (txtMailEmpfaenger.Text != $"{Properties.Settings.Default.MailEmpfaenger}") Properties.Settings.Default.MailEmpfaenger = txtMailEmpfaenger.Text;

@@ -12,10 +12,10 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BenutzerDB" Type="System.String" Scope="User">
-      <Value Profile="(Default)">bde</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PasswortDB" Type="System.String" Scope="User">
-      <Value Profile="(Default)">123456</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Datenbankname" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -41,11 +41,11 @@
     <Setting Name="MailEmpfaenger" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="PW1" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="Wartezeit" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
     </Setting>
-    <Setting Name="PW2" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="Listenleinträge" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
     </Setting>
   </Settings>
 </SettingsFile>

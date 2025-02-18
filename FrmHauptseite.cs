@@ -40,6 +40,10 @@ namespace Übertragung_BDE
                 string currentTime = DateTime.Now.ToString("MM.dd. | HH:mm:ss:ff");
                 ListViewItem item = new(currentTime);
                 item.SubItems.Add(message);
+                if (listEmpfang.Items.Count >= Properties.Settings.Default.Listenleinträge)
+                {
+                    listEmpfang.Items.RemoveAt(listEmpfang.Items.Count - 1);
+                }
                 listEmpfang.Items.Insert(0, item); // Neueste Meldung oben einfügen
                 antwortSPSerhalten = true;
                 letzteNachrichtSPS = message;
@@ -56,6 +60,11 @@ namespace Übertragung_BDE
                 string currentTime = DateTime.Now.ToString("MM.dd. | HH:mm:ss:ff");
                 ListViewItem item = new(currentTime);
                 item.SubItems.Add(message);
+                if (listGesendet.Items.Count >= Properties.Settings.Default.Listenleinträge)
+                {
+                    // Ältesten Eintrag entfernen
+                    listGesendet.Items.RemoveAt(listGesendet.Items.Count - 1);
+                }
                 listGesendet.Items.Insert(0, item); // Neueste Meldung oben einfügen
             }
         }
@@ -142,6 +151,7 @@ namespace Übertragung_BDE
                     // Prüfung ob gesteuert wird 
                     while (true)
                     {
+                        erfolgreichGespeichert = false;
                         antwortSPSerhalten = false;
                         letzteNachrichtSPS = "";
                         int toEingang = 5000;
@@ -155,6 +165,7 @@ namespace Übertragung_BDE
                         {
                             if (letzteNachrichtSPS == "99")
                             {
+                                Logging.ResetErrorLog(); // Zähler Errorlog zurücksetzen
                                 break; // Beende die Empfangsschleife
                             }
                             else
@@ -170,19 +181,16 @@ namespace Übertragung_BDE
                         }
                         else
                         {
-                            MessageBox.Show("Fehler: Keine Antwort innerhalb der Zeit!");
+                            Logging.ErrorLog("Fehler beim Warten auf neue Nachricht: Keine Antwort innerhalb der Zeit!");
                             break; // Falls kein neuer Datensatz kommt, abbrechen
                         }
                     }
-
-
-
-                    // 3️⃣ Pause vor Neustart
-                    await Task.Delay(TimeSpan.FromSeconds(20), token);
+                   // 3️⃣ Pause vor Neustart
+                    await Task.Delay(TimeSpan.FromSeconds(Properties.Settings.Default.Wartezeit), token);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Fehler im Automatikprozess: {ex.Message}");
+                    Logging.ErrorLog($"Fehler im Automatikprozess: {ex.Message}");
                 }
             }
         }
@@ -190,7 +198,6 @@ namespace Übertragung_BDE
         {
             string UpdateQuery; string? id=""; string? ba; string? ioSchuss; string? nioSchuss;
             string? peri1; string? peri2;
-
             try
             {
                 List<string> updateList = [];
@@ -217,9 +224,6 @@ namespace Übertragung_BDE
                 {
                    
                 } // Zusatzdaten 2  Energieverbrauch
-
-
-
                 string updateString = string.Join(", ", updateList);
                 UpdateQuery = $"UPDATE test SET {updateString} WHERE id = {id}";
                 DbHelper.Instance.ExecuteNonQuery(UpdateQuery);
@@ -227,8 +231,6 @@ namespace Übertragung_BDE
                 {
                     erfolgreichGespeichert = true;
                 }
-
-
 
             }
             catch (Exception ex)
@@ -242,11 +244,6 @@ namespace Übertragung_BDE
 
 
         }
-
-
-
-
-
         private void FrmHauptseite_FormClosing(object sender, FormClosingEventArgs e)
         {
             _cancellationTokenSource?.Cancel();
@@ -269,13 +266,4 @@ namespace Übertragung_BDE
             Close();
         }
     }
-
-
-
-
-
-
-
-
-
 }

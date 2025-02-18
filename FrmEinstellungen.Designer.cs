@@ -46,6 +46,8 @@
             txtSPSPort = new TextBox();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
+            txtWartezeit = new TextBox();
+            lblWartezeit = new Label();
             DB_SPS = new TabPage();
             Mail = new TabPage();
             txtSmtpAdresse = new TextBox();
@@ -61,7 +63,10 @@
             lblMailEmpfaenger = new Label();
             txtMailEmpfaenger = new TextBox();
             btnTestMail = new Button();
+            txtListeneinträge = new TextBox();
+            lblListenlänge = new Label();
             tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
             DB_SPS.SuspendLayout();
             Mail.SuspendLayout();
             SuspendLayout();
@@ -236,12 +241,34 @@
             // 
             // tabPage1
             // 
+            tabPage1.Controls.Add(txtListeneinträge);
+            tabPage1.Controls.Add(lblListenlänge);
+            tabPage1.Controls.Add(txtWartezeit);
+            tabPage1.Controls.Add(lblWartezeit);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Size = new Size(400, 308);
             tabPage1.TabIndex = 2;
             tabPage1.Text = "System";
             tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // txtWartezeit
+            // 
+            txtWartezeit.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold);
+            txtWartezeit.Location = new Point(190, 15);
+            txtWartezeit.Margin = new Padding(3, 2, 3, 2);
+            txtWartezeit.Name = "txtWartezeit";
+            txtWartezeit.Size = new Size(155, 26);
+            txtWartezeit.TabIndex = 8;
+            // 
+            // lblWartezeit
+            // 
+            lblWartezeit.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold);
+            lblWartezeit.Location = new Point(15, 15);
+            lblWartezeit.Name = "lblWartezeit";
+            lblWartezeit.Size = new Size(155, 25);
+            lblWartezeit.TabIndex = 7;
+            lblWartezeit.Text = "Wartezeit Zyklus";
             // 
             // DB_SPS
             // 
@@ -412,6 +439,24 @@
             btnTestMail.UseVisualStyleBackColor = true;
             btnTestMail.Click += BtnTestMail_Click;
             // 
+            // txtListeneinträge
+            // 
+            txtListeneinträge.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold);
+            txtListeneinträge.Location = new Point(190, 50);
+            txtListeneinträge.Margin = new Padding(3, 2, 3, 2);
+            txtListeneinträge.Name = "txtListeneinträge";
+            txtListeneinträge.Size = new Size(155, 26);
+            txtListeneinträge.TabIndex = 10;
+            // 
+            // lblListenlänge
+            // 
+            lblListenlänge.Font = new Font("Segoe UI Semibold", 10.2F, FontStyle.Bold);
+            lblListenlänge.Location = new Point(15, 50);
+            lblListenlänge.Name = "lblListenlänge";
+            lblListenlänge.Size = new Size(155, 25);
+            lblListenlänge.TabIndex = 9;
+            lblListenlänge.Text = "Anzahl Listeneinträge";
+            // 
             // FrmEinstellungen
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -425,6 +470,8 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Admin Einstellungen";
             tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tabPage1.PerformLayout();
             DB_SPS.ResumeLayout(false);
             DB_SPS.PerformLayout();
             Mail.ResumeLayout(false);
@@ -432,7 +479,7 @@
             ResumeLayout(false);
         }
 
-       
+
 
         #endregion
 
@@ -469,5 +516,9 @@
         private Label label8;
         private TextBox txtSmtpPort;
         private Label label3;
+        private TextBox txtWartezeit;
+        private Label lblWartezeit;
+        private TextBox txtListeneinträge;
+        private Label lblListenlänge;
     }
 }

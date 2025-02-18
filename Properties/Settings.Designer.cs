@@ -61,7 +61,7 @@ namespace Übertragung_BDE.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("bde")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string BenutzerDB {
             get {
                 return ((string)(this["BenutzerDB"]));
@@ -73,7 +73,7 @@ namespace Übertragung_BDE.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("123456")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string PasswortDB {
             get {
                 return ((string)(this["PasswortDB"]));
@@ -181,25 +181,25 @@ namespace Übertragung_BDE.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PW1 {
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int Wartezeit {
             get {
-                return ((string)(this["PW1"]));
+                return ((int)(this["Wartezeit"]));
             }
             set {
-                this["PW1"] = value;
+                this["Wartezeit"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PW2 {
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int Listenleinträge {
             get {
-                return ((string)(this["PW2"]));
+                return ((int)(this["Listenleinträge"]));
             }
             set {
-                this["PW2"] = value;
+                this["Listenleinträge"] = value;
             }
         }
     }

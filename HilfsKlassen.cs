@@ -19,23 +19,79 @@ namespace Übertragung_BDE
         private static readonly string errorLogPfad = "error_log.txt";
         private static readonly string appLogPfad = "app_log.txt";
         private static readonly string infoLogPfad = "info_log.txt";
+        public static int ErrorLogCount { get; private set; }
+        public static void ErrorLogErhöhen()
+        {
+            ErrorLogCount++;
+        }
+        public static void ResetErrorLog()
+        {
+            ErrorLogCount = 0;
+        }
         public static void ErrorLog(string message)
         {
-            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - ERROR: {message} {Environment.NewLine}";
-            File.AppendAllText(errorLogPfad, logMessage);
+            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Info : {message}";
+            try
+            {
+                var logFileContent = new List<string>();
+                if (File.Exists(errorLogPfad))
+                {
+                    logFileContent = [.. File.ReadAllLines(errorLogPfad)];
+                }
+                logFileContent.Insert(0, logMessage);
+                File.WriteAllLines(errorLogPfad, logFileContent);
+               ErrorLogErhöhen();
+                // Aktion auslösen, wenn Zähler einen bestimmten Wert erreicht
+                if (ErrorLogCount == 10)
+                {     
+                    // Oberste 10 Einträge auslesen
+                    var letzte10Einträge = logFileContent.Take(10).ToList();
+                    string logText = string.Join(Environment.NewLine, letzte10Einträge);
+                    E_Mail_versand.SendEmail("Error Log Benachrichtigung ", logText);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error writing to log file: {ex.Message}");
+            }
         }
         public static void AppLog(string message)
         {
-            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - INFO: {message} {Environment.NewLine}";
-            File.AppendAllText(appLogPfad, logMessage);
+            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Info : {message}";
+            try
+            {
+                var logFileContent = new List<string>();
+                if (File.Exists(appLogPfad))
+                {
+                    logFileContent = [.. File.ReadAllLines(appLogPfad)];
+                }
+                logFileContent.Insert(0, logMessage);
+                File.WriteAllLines(appLogPfad, logFileContent);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error writing to log file: {ex.Message}");
+            }
         }
         public static void InfoLog(string message)
         {
-            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - INFO: {message} {Environment.NewLine}";
-            File.AppendAllText(infoLogPfad, logMessage);
+            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Info : {message}";
+            try
+            {
+                var logFileContent = new List<string>();
+                if (File.Exists(infoLogPfad))
+                {
+                    logFileContent = [.. File.ReadAllLines(infoLogPfad)];
+                }
+                logFileContent.Insert(0, logMessage);
+                File.WriteAllLines(infoLogPfad, logFileContent);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error writing to log file: {ex.Message}");
+            }
         }
     }
-
     public class PasswortEncrypt
     {
         private static readonly string encryptionKey = "sldWh8dWpFaWCE0KBH1uEQ3JJGzVcatFIV58eS9Khr8="; // Schlüssel für AES-Verschlüsselung
