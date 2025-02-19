@@ -30,7 +30,7 @@ namespace Übertragung_BDE
         }
         public static void ErrorLog(string message)
         {
-            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - Info : {message}";
+            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - ERROR : {message}";
             try
             {
                 var logFileContent = new List<string>();

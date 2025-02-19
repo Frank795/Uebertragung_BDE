@@ -176,8 +176,10 @@ namespace Übertragung_BDE
                                 if (erfolgreichGespeichert)
                                 {
                                     TcpClientSingleton.Instance.SendMessage("01");
-                                }                               
+                                }
+                                
                             }
+                            
                         }
                         else
                         {
