@@ -99,8 +99,8 @@ namespace Übertragung_BDE
                             int zeitToSteuern = 0;
                             while (!antwortSPSerhalten && zeitToSteuern < toSteuern)
                             {
-                                await Task.Delay(10, token);
-                                zeitToSteuern += 100;
+                                await Task.Delay(50, token);
+                                zeitToSteuern += 50;
                             }
                             if (antwortSPSerhalten)
                             {
@@ -127,8 +127,8 @@ namespace Übertragung_BDE
                             int zeitToSteuern = 0;
                             while (!antwortSPSerhalten && zeitToSteuern < toSteuern)
                             {
-                                await Task.Delay(10, token);
-                                zeitToSteuern += 100;
+                                await Task.Delay(50, token);
+                                zeitToSteuern += 50;
                             }
                             if (antwortSPSerhalten)
                             {
@@ -154,12 +154,12 @@ namespace Übertragung_BDE
                         erfolgreichGespeichert = false;
                         antwortSPSerhalten = false;
                         letzteNachrichtSPS = "";
-                        int toEingang = 5000;
+                        int toEingang = 10000;
                         int zeitToEingang = 0;
                         while (!antwortSPSerhalten && zeitToEingang < toEingang)
                         {
-                            await Task.Delay(10, token);
-                            zeitToEingang += 10;
+                            await Task.Delay(50, token);
+                            zeitToEingang += 50;
                         }
                         if (antwortSPSerhalten)
                         {
@@ -175,6 +175,7 @@ namespace Übertragung_BDE
                                 // Bestätigung senden
                                 if (erfolgreichGespeichert)
                                 {
+                                    await Task.Delay(100, token);
                                     TcpClientSingleton.Instance.SendMessage("01");
                                 }
                                 

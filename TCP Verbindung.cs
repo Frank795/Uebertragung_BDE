@@ -41,7 +41,6 @@
                 isRunning = true;
                 ConnectionStatusChanged?.Invoke(true);
                 Task.Run(() => ListenForClients());
-                //MessageBox.Show($"Server gestartet und hört auf {allowedIpAddress} : {port}.");
             }
             catch (Exception ex)
             {
@@ -115,17 +114,55 @@
 
             return await tcs.Task; // Warten, bis die SPS eine Antwort sendet
         }
-        public void SendMessage(string message)
+        public bool SendMessage(string message)
         {
             if (stream != null && client.Connected)
             {
                 byte[] data = Encoding.ASCII.GetBytes(message);
-                stream.Write(data, 0, data.Length);
-                stream.Flush();
-                // Event auslösen
-                MessageSent?.Invoke(message);
+
+                try
+                {
+                    stream.Write(data, 0, data.Length);
+                    stream.Flush();
+
+                    Logging.InfoLog($"📤 Gesendet: {message} (Bytes: {data.Length})");
+
+                    // Prüfe, ob Stream noch schreibbar ist
+                    if (!stream.CanWrite)
+                    {
+                        Logging.ErrorLog("❌ Fehler: Stream blockiert, Nachricht evtl. nicht gesendet!");
+                        return false;
+                    }
+                    MessageSent?.Invoke(message);
+                    return true;
+
+                }
+                catch (Exception ex)
+                {
+                    Logging.ErrorLog($"❌ Fehler beim Senden: {ex.Message}");
+                    return false;
+                }
+            }
+            else
+            {
+                Logging.ErrorLog("❌ Fehler: Verbindung nicht verfügbar!");
+                return false;
             }
         }
+
+
+
+        //public void SendMessage(string message)
+        //{
+        //    if (stream != null && client.Connected)
+        //    {
+        //        byte[] data = Encoding.ASCII.GetBytes(message);
+        //        stream.Write(data, 0, data.Length);
+        //        stream.Flush();
+        //        // Event auslösen
+        //        MessageSent?.Invoke(message);
+        //    }
+        //}
         public void StopServer()
         {
             isRunning = false;

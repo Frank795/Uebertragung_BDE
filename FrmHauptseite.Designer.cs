@@ -36,8 +36,8 @@
             datum = new ColumnHeader();
             daten = new ColumnHeader();
             listGesendet = new ListView();
-            columnHeader1 = new ColumnHeader();
-            columnHeader2 = new ColumnHeader();
+            DatumUhrzeit = new ColumnHeader();
+            Sendedaten = new ColumnHeader();
             btnAutoStop = new Button();
             btnAutoStart = new Button();
             btnBeenden = new Button();
@@ -47,7 +47,7 @@
             // btnEinstellungen
             // 
             btnEinstellungen.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnEinstellungen.Location = new Point(715, 242);
+            btnEinstellungen.Location = new Point(723, 246);
             btnEinstellungen.Name = "btnEinstellungen";
             btnEinstellungen.Size = new Size(94, 47);
             btnEinstellungen.TabIndex = 0;
@@ -82,7 +82,7 @@
             groupBox1.Controls.Add(btnSenden);
             groupBox1.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.ForeColor = Color.CornflowerBlue;
-            groupBox1.Location = new Point(715, 31);
+            groupBox1.Location = new Point(723, 35);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(190, 134);
             groupBox1.TabIndex = 3;
@@ -112,30 +112,30 @@
             // 
             // listGesendet
             // 
-            listGesendet.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2 });
+            listGesendet.Columns.AddRange(new ColumnHeader[] { DatumUhrzeit, Sendedaten });
             listGesendet.GridLines = true;
-            listGesendet.Location = new Point(412, 31);
+            listGesendet.Location = new Point(402, 31);
             listGesendet.Name = "listGesendet";
-            listGesendet.Size = new Size(271, 262);
+            listGesendet.Size = new Size(281, 262);
             listGesendet.TabIndex = 5;
             listGesendet.UseCompatibleStateImageBehavior = false;
             listGesendet.View = View.Details;
             // 
-            // columnHeader1
+            // DatumUhrzeit
             // 
-            columnHeader1.Text = "Datum / Uhrzeit";
-            columnHeader1.Width = 120;
+            DatumUhrzeit.Text = "Datum / Uhrzeit";
+            DatumUhrzeit.Width = 120;
             // 
-            // columnHeader2
+            // Sendedaten
             // 
-            columnHeader2.Text = "Sendedaten zur SPS";
-            columnHeader2.Width = 150;
+            Sendedaten.Text = "Sendedaten zur SPS";
+            Sendedaten.Width = 150;
             // 
             // btnAutoStop
             // 
             btnAutoStop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnAutoStop.ForeColor = Color.Red;
-            btnAutoStop.Location = new Point(715, 184);
+            btnAutoStop.Location = new Point(723, 188);
             btnAutoStop.Name = "btnAutoStop";
             btnAutoStop.Size = new Size(94, 47);
             btnAutoStop.TabIndex = 6;
@@ -147,7 +147,7 @@
             // 
             btnAutoStart.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnAutoStart.ForeColor = Color.Green;
-            btnAutoStart.Location = new Point(811, 184);
+            btnAutoStart.Location = new Point(819, 188);
             btnAutoStart.Name = "btnAutoStart";
             btnAutoStart.Size = new Size(94, 47);
             btnAutoStart.TabIndex = 7;
@@ -158,7 +158,7 @@
             // btnBeenden
             // 
             btnBeenden.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnBeenden.Location = new Point(811, 242);
+            btnBeenden.Location = new Point(819, 246);
             btnBeenden.Name = "btnBeenden";
             btnBeenden.Size = new Size(94, 47);
             btnBeenden.TabIndex = 8;
@@ -198,8 +198,8 @@
         private ColumnHeader datum;
         private ColumnHeader daten;
         public ListView listGesendet;
-        private ColumnHeader columnHeader1;
-        private ColumnHeader columnHeader2;
+        private ColumnHeader DatumUhrzeit;
+        private ColumnHeader Sendedaten;
         private Button btnAutoStop;
         private Button btnAutoStart;
         private Button btnBeenden;
