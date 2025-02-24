@@ -13,7 +13,6 @@ namespace Übertragung_BDE
         public static string GetConnectionString()
         {                     
             string pass = PasswortEncrypt.Decrypt(Properties.Settings.Default.PasswortDB);
-            //string pass = Properties.Settings.Default.PasswortDB;
             return $"server={Properties.Settings.Default.IpAdresseDB};" +
                    $"database={Properties.Settings.Default.Datenbankname};" +
                    $"port={Properties.Settings.Default.PortDB};" +
@@ -56,7 +55,6 @@ namespace Übertragung_BDE
                 catch (Exception ex)
                 {
                     Logging.ErrorLog($" Fehler DB SELECT :{ex.Message}");
-                    //MessageBox.Show($"Ein Fehler ist aufgetreten. Details wurden protokolliert. {ex.Message}" );
                     throw;
                 }
             }

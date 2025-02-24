@@ -114,7 +114,7 @@
             // 
             listGesendet.Columns.AddRange(new ColumnHeader[] { DatumUhrzeit, Sendedaten });
             listGesendet.GridLines = true;
-            listGesendet.Location = new Point(402, 31);
+            listGesendet.Location = new Point(388, 31);
             listGesendet.Name = "listGesendet";
             listGesendet.Size = new Size(281, 262);
             listGesendet.TabIndex = 5;

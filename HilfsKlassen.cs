@@ -15,7 +15,7 @@ namespace Übertragung_BDE
         public static Logging Instance => _instance ??= new Logging();
         // Privater Konstruktor verhindert direkte Instanziierung
         private Logging() { }   
-        // ERROR in Datei 
+        // in Datei 
         private static readonly string errorLogPfad = "error_log.txt";
         private static readonly string appLogPfad = "app_log.txt";
         private static readonly string infoLogPfad = "info_log.txt";

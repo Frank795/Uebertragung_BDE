@@ -83,9 +83,6 @@ namespace Übertragung_BDE
                 MessageBox.Show($"Fehler beim Senden der E-Mail: {ex.Message}");
             }
         }
-
-
     }
-
 }
 

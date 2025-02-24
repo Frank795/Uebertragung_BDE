@@ -19,8 +19,7 @@ namespace Übertragung_BDE
             einstellungen.Show();
         }
         private async void Hauptseite_Load(object sender, EventArgs e)
-        {
-           
+        {        
             Logging.AppLog("APP gestartet");
             TcpClientSingleton.Instance.DataReceived += NeueDatenEingegangen;
             TcpClientSingleton.Instance.MessageSent += NeuDatenGesendet;
@@ -73,16 +72,15 @@ namespace Übertragung_BDE
             TcpClientSingleton.Instance.SendMessage(txtSenden.Text);
         }
         private async Task AutomatischerProzess(CancellationToken token)
-        {
-           
+        {           
             while (!token.IsCancellationRequested)
             {
                 try
                 {
-                    string query1 = " SELECT * from test ";
-                    DataTable anlagen = DbHelper.Instance.ExecuteSelectQuery(query1);
+                    string abfrageSteuern = " SELECT * from test ";
+                    DataTable steuern = DbHelper.Instance.ExecuteSelectQuery(abfrageSteuern);
                     // Step1 Datendurchlauf und Steuern wenn nötig
-                    foreach (DataRow row in anlagen.Rows)
+                    foreach (DataRow row in steuern.Rows)
                     {
                         string? id = row["id"].ToString();
                         string? peri1_soll = row["peri1_soll"].ToString();
@@ -148,7 +146,6 @@ namespace Übertragung_BDE
                     }
                     // Step 2 Datenaustausch 
                     TcpClientSingleton.Instance.SendMessage("02");
-                    // Prüfung ob gesteuert wird 
                     while (true)
                     {
                         erfolgreichGespeichert = false;
@@ -158,8 +155,8 @@ namespace Übertragung_BDE
                         int zeitToEingang = 0;
                         while (!antwortSPSerhalten && zeitToEingang < toEingang)
                         {
-                            await Task.Delay(50, token);
-                            zeitToEingang += 50;
+                            await Task.Delay(5, token);
+                            zeitToEingang += 5;
                         }
                         if (antwortSPSerhalten)
                         {
@@ -170,17 +167,13 @@ namespace Übertragung_BDE
                             }
                             else
                             {
-                                // Speichere empfangene Daten in der DB
                                 SpeichereInDB(letzteNachrichtSPS);
-                                // Bestätigung senden
+                               // await Task.Delay(10,token);  // VZ  speichern und "01"
                                 if (erfolgreichGespeichert)
-                                {
-                                    await Task.Delay(100, token);
+                                {                                   
                                     TcpClientSingleton.Instance.SendMessage("01");
                                 }
-                                
-                            }
-                            
+                            }    
                         }
                         else
                         {
@@ -225,7 +218,7 @@ namespace Übertragung_BDE
                 } // Zusatzdaten 1  Peripherieausgänge
                 if (message.Length >= 60)
                 {
-                   
+              
                 } // Zusatzdaten 2  Energieverbrauch
                 string updateString = string.Join(", ", updateList);
                 UpdateQuery = $"UPDATE test SET {updateString} WHERE id = {id}";
@@ -234,18 +227,11 @@ namespace Übertragung_BDE
                 {
                     erfolgreichGespeichert = true;
                 }
-
             }
             catch (Exception ex)
             {
                 Logging.ErrorLog($"Fehler beim Verarbeiten der Nachricht: {ex.Message}");
-              
             }
-
-
-
-
-
         }
         private void FrmHauptseite_FormClosing(object sender, FormClosingEventArgs e)
         {
