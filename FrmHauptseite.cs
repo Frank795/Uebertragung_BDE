@@ -1,40 +1,33 @@
+using System.Data;
+using System.Threading;
+
 namespace Übertragung_BDE
 {
     public partial class FrmHauptseite : Form
     {
+        private CancellationTokenSource? _cancellationTokenSource;
+        private bool antwortSPSerhalten = false;
+        private string letzteNachrichtSPS = "";
+        private bool erfolgreichGespeichert = false;
         public FrmHauptseite()
         {
             InitializeComponent();
-            TcpClientSingleton.Instance.StartServer();
         }
-
-
         private void Btn_Einstellungen_Click(object sender, EventArgs e)
         {
-            FrmEinstellungen einstellungen = new FrmEinstellungen();
-            if (einstellungen.ShowDialog() == DialogResult.OK)
-            {
-                //// Server neu starten, um die neue IP-Adresse zu übernehmen
-                //TCPListenerRestart = true;
-                //StopTCPServer();
-                //Thread.Sleep(3000);
-                //StartTCPServer();
-                //TCPListenerRestart = false;
-            }
-
-
+            FrmEinstellungen einstellungen = new();
+            einstellungen.Show();
         }
-
-        private void Hauptseite_Load(object sender, EventArgs e)
-        {
+        private async void Hauptseite_Load(object sender, EventArgs e)
+        {        
+            Logging.AppLog("APP gestartet");
             TcpClientSingleton.Instance.DataReceived += NeueDatenEingegangen;
+            TcpClientSingleton.Instance.MessageSent += NeuDatenGesendet;
             TcpClientSingleton.Instance.StartServer();
-
-
-            TcpClientSingleton.Instance.MessageSent += AddSentMessageToListBox;
-            TcpClientSingleton.Instance.StartServer();
+            await Task.Delay(3000);// Wartezeit nach Start zum verbindungsaufbau
+            _cancellationTokenSource = new CancellationTokenSource();
+            _ = Task.Run(() => AutomatischerProzess(_cancellationTokenSource.Token));
         }
-
         private void NeueDatenEingegangen(string message)
         {
             if (listEmpfang.InvokeRequired)
@@ -44,84 +37,222 @@ namespace Übertragung_BDE
             else
             {
                 string currentTime = DateTime.Now.ToString("MM.dd. | HH:mm:ss:ff");
-                ListViewItem item = new ListViewItem(currentTime);
+                ListViewItem item = new(currentTime);
                 item.SubItems.Add(message);
+                if (listEmpfang.Items.Count >= Properties.Settings.Default.Listenleinträge)
+                {
+                    listEmpfang.Items.RemoveAt(listEmpfang.Items.Count - 1);
+                }
                 listEmpfang.Items.Insert(0, item); // Neueste Meldung oben einfügen
-
-                if (message.Length == 2)
-                {
-                    MessageBox.Show("Quittung");
-                }
-                else
-                {
-                    MessageBox.Show($"{message.Length}");
-                }
-                    
-
-                //VerarbeiteEingangsdaten(message);
+                antwortSPSerhalten = true;
+                letzteNachrichtSPS = message;
             }
         }
-
-
-        private void AddSentMessageToListBox(string message)
+        private void NeuDatenGesendet(string message)
         {
             if (listGesendet.InvokeRequired)
             {
-                listGesendet.Invoke(new Action(() => AddSentMessageToListBox(message)));
+                listGesendet.Invoke(new Action(() => NeuDatenGesendet(message)));
             }
             else
             {
                 string currentTime = DateTime.Now.ToString("MM.dd. | HH:mm:ss:ff");
                 ListViewItem item = new(currentTime);
                 item.SubItems.Add(message);
+                if (listGesendet.Items.Count >= Properties.Settings.Default.Listenleinträge)
+                {
+                    // Ältesten Eintrag entfernen
+                    listGesendet.Items.RemoveAt(listGesendet.Items.Count - 1);
+                }
                 listGesendet.Items.Insert(0, item); // Neueste Meldung oben einfügen
-
             }
         }
-
-
-
-        private void VerarbeiteEingangsdaten(string message)
-        {
-            try
-            {
-                // Daten anhand von ';' splitten
-                var datenTeile = message.Split(' ');
-                var id = datenTeile[0].Split(' ')[1];
-                var ba = datenTeile[1].Split(' ')[1];
-                var ioSchuss = datenTeile[2].Split(' ')[1];
-                var nioSchuss = datenTeile[3].Split(' ')[1];
-
-               // Console.WriteLine($"Empfangen -> ID: {id}, Wert: {wert}, Status: {status}");
-
-                // Daten in die DB schreiben
-               // SpeichereInDatenbank(id, wert, status);
-
-                // Antwort an SPS senden
-               // AntwortAnSPS($"Bestätigung: ID {id} empfangen");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fehler beim Verarbeiten der Nachricht: {ex.Message}");
-            }
-        }
-
-        private void DatenAbrufen()
-        {
-
-
-
-        }
-
-        private void Button1_Click(object sender, EventArgs e)
+        private void BtnTestMail_Click(object sender, EventArgs e)
         {
             TcpClientSingleton.Instance.SendMessage(txtSenden.Text);
         }
-
-        private void listGesendet_SelectedIndexChanged(object sender, EventArgs e)
+        private async Task AutomatischerProzess(CancellationToken token)
+        {           
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    string abfrageSteuern = " SELECT * from test ";
+                    DataTable steuern = DbHelper.Instance.ExecuteSelectQuery(abfrageSteuern);
+                    // Step1 Datendurchlauf und Steuern wenn nötig
+                    foreach (DataRow row in steuern.Rows)
+                    {
+                        string? id = row["id"].ToString();
+                        string? peri1_soll = row["peri1_soll"].ToString();
+                        string? peri1_ist = row["peri1_ist"].ToString();
+                        string? peri2_soll = row["peri2_soll"].ToString();
+                        string? peri2_ist = row["peri2_ist"].ToString();
+                        if (peri1_soll != peri1_ist)
+                        {
+                            string steuerbefehl = $"10 {id} {peri1_soll}";
+                            antwortSPSerhalten = false;
+                            letzteNachrichtSPS = "";
+                            TcpClientSingleton.Instance.SendMessage(steuerbefehl);
+                            int toSteuern = 5000; // 5 Sekunden Timeout
+                            int zeitToSteuern = 0;
+                            while (!antwortSPSerhalten && zeitToSteuern < toSteuern)
+                            {
+                                await Task.Delay(50, token);
+                                zeitToSteuern += 50;
+                            }
+                            if (antwortSPSerhalten)
+                            {
+                                if (letzteNachrichtSPS == "01")
+                                {
+                                }
+                                if (letzteNachrichtSPS == "02")
+                                {
+                                    Logging.InfoLog($"Deaktivierten Baustein gesteuert {id}");
+                                }
+                            }
+                            else
+                            {
+                                Logging.ErrorLog("Fehler beim Steuern: Keine Antwort innerhalb der Zeit!");
+                            }
+                        }
+                        if (peri2_soll != peri2_ist)  
+                        {
+                            string steuerbefehl = $"11 {id} {peri2_soll}";
+                            antwortSPSerhalten = false;
+                            letzteNachrichtSPS = "";
+                            TcpClientSingleton.Instance.SendMessage(steuerbefehl);
+                            int toSteuern = 5000; // 5 Sekunden Timeout
+                            int zeitToSteuern = 0;
+                            while (!antwortSPSerhalten && zeitToSteuern < toSteuern)
+                            {
+                                await Task.Delay(50, token);
+                                zeitToSteuern += 50;
+                            }
+                            if (antwortSPSerhalten)
+                            {
+                                if (letzteNachrichtSPS == "01")
+                                {
+                                }
+                                if (letzteNachrichtSPS == "02")
+                                {
+                                    Logging.InfoLog($"Deaktivierten Baustein gesteuert {id}");
+                                }
+                            }
+                            else
+                            {
+                                Logging.ErrorLog("Fehler beim Steuern: Keine Antwort innerhalb der Zeit!");
+                            }
+                        }
+                    }
+                    // Step 2 Datenaustausch 
+                    TcpClientSingleton.Instance.SendMessage("02");
+                    while (true)
+                    {
+                        erfolgreichGespeichert = false;
+                        antwortSPSerhalten = false;
+                        letzteNachrichtSPS = "";
+                        int toEingang = 10000;
+                        int zeitToEingang = 0;
+                        while (!antwortSPSerhalten && zeitToEingang < toEingang)
+                        {
+                            await Task.Delay(5, token);
+                            zeitToEingang += 5;
+                        }
+                        if (antwortSPSerhalten)
+                        {
+                            if (letzteNachrichtSPS == "99")
+                            {
+                                Logging.ResetErrorLog(); // Zähler Errorlog zurücksetzen
+                                break; // Beende die Empfangsschleife
+                            }
+                            else
+                            {
+                                SpeichereInDB(letzteNachrichtSPS);
+                               // await Task.Delay(10,token);  // VZ  speichern und "01"
+                                if (erfolgreichGespeichert)
+                                {                                   
+                                    TcpClientSingleton.Instance.SendMessage("01");
+                                }
+                            }    
+                        }
+                        else
+                        {
+                            Logging.ErrorLog("Fehler beim Warten auf neue Nachricht: Keine Antwort innerhalb der Zeit!");
+                            break; // Falls kein neuer Datensatz kommt, abbrechen
+                        }
+                    }
+                   // 3️⃣ Pause vor Neustart
+                    await Task.Delay(TimeSpan.FromSeconds(Properties.Settings.Default.Wartezeit), token);
+                }
+                catch (Exception ex)
+                {
+                    Logging.ErrorLog($"Fehler im Automatikprozess: {ex.Message}");
+                }
+            }
+        }
+        private void SpeichereInDB(string message)
         {
+            string UpdateQuery; string? id=""; string? ba; string? ioSchuss; string? nioSchuss;
+            string? peri1; string? peri2;
+            try
+            {
+                List<string> updateList = [];
+                string[] datenTeile = message.Split(' ');
+                if (message.Length >= 24)
+                {
+                    id = datenTeile[0];       // Erste Zahl → ID                       
+                    ba = datenTeile[1];   // Zweite Zahl → Status                       
+                    ioSchuss = datenTeile[2];    // Dritte Zahl → Wert 1                        
+                    nioSchuss = datenTeile[3];    // Vierte Zahl → Wert 2                                                                              
+                    updateList.Add($"ba = {ba}");
+                    updateList.Add($"io_schuss = io_schuss + {ioSchuss}");
+                    updateList.Add($"nio_schuss = nio_schuss + {nioSchuss}");
 
+                } // Standartdaten 24 Zeichen
+                if (message.Length >= 28)
+                {
+                    peri1 = datenTeile[4];   // Zweite Zahl → Status                     
+                    peri2 = datenTeile[5];   // Zweite Zahl → Status
+                    updateList.Add($"peri1_ist = {peri1}");
+                    updateList.Add($"peri2_ist = {peri2}");
+                } // Zusatzdaten 1  Peripherieausgänge
+                if (message.Length >= 60)
+                {
+              
+                } // Zusatzdaten 2  Energieverbrauch
+                string updateString = string.Join(", ", updateList);
+                UpdateQuery = $"UPDATE test SET {updateString} WHERE id = {id}";
+                DbHelper.Instance.ExecuteNonQuery(UpdateQuery);
+                if ((DbHelper.Instance.ExecuteNonQuery(UpdateQuery)))
+                {
+                    erfolgreichGespeichert = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.ErrorLog($"Fehler beim Verarbeiten der Nachricht: {ex.Message}");
+            }
+        }
+        private void FrmHauptseite_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _cancellationTokenSource?.Cancel();
+        }
+        private void BtnAutoStop_Click(object sender, EventArgs e)
+        {
+            Logging.AppLog("Automatik über Taste beendet");
+            _cancellationTokenSource?.Cancel();
+        }
+        private void BtnAutoStart_Click(object sender, EventArgs e)
+        {
+            Logging.AppLog("Automatik über Taste gestartet");
+            _cancellationTokenSource = new CancellationTokenSource();
+            Task.Run(() => AutomatischerProzess(_cancellationTokenSource.Token));
+        }
+        private void BtnBeenden_Click(object sender, EventArgs e)
+        {
+            Logging.AppLog("App über Taste Geschlossen");
+            _cancellationTokenSource?.Cancel();
+            Close();
         }
     }
-
 }
