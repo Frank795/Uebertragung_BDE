@@ -39,7 +39,7 @@ namespace Übertragung_BDE
                 string currentTime = DateTime.Now.ToString("MM.dd. | HH:mm:ss:ff");
                 ListViewItem item = new(currentTime);
                 item.SubItems.Add(message);
-                if (listEmpfang.Items.Count >= Properties.Settings.Default.Listenleinträge)
+                if (listEmpfang.Items.Count >= Properties.Settings.Default.Listeneinträge)
                 {
                     listEmpfang.Items.RemoveAt(listEmpfang.Items.Count - 1);
                 }
@@ -59,7 +59,7 @@ namespace Übertragung_BDE
                 string currentTime = DateTime.Now.ToString("MM.dd. | HH:mm:ss:ff");
                 ListViewItem item = new(currentTime);
                 item.SubItems.Add(message);
-                if (listGesendet.Items.Count >= Properties.Settings.Default.Listenleinträge)
+                if (listGesendet.Items.Count >= Properties.Settings.Default.Listeneinträge)
                 {
                     // Ältesten Eintrag entfernen
                     listGesendet.Items.RemoveAt(listGesendet.Items.Count - 1);

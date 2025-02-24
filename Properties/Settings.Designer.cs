@@ -194,12 +194,12 @@ namespace Übertragung_BDE.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public int Listenleinträge {
+        public int Listeneinträge {
             get {
-                return ((int)(this["Listenleinträge"]));
+                return ((int)(this["Listeneinträge"]));
             }
             set {
-                this["Listenleinträge"] = value;
+                this["Listeneinträge"] = value;
             }
         }
     }

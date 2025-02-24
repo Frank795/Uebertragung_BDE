@@ -25,7 +25,7 @@ namespace Übertragung_BDE
             InitializeComponent();
             // System / Standorteinstellungen 
             txtWartezeit.Text = $"{Properties.Settings.Default.Wartezeit}";
-            txtListeneinträge.Text = $"{Properties.Settings.Default.Listenleinträge}";
+            txtListeneinträge.Text = $"{Properties.Settings.Default.Listeneinträge}";
 
 
 
@@ -219,7 +219,7 @@ namespace Übertragung_BDE
             if (aktiverTabIndex == 0)
             {
                 if (txtWartezeit.Text != $"{Properties.Settings.Default.Wartezeit}") Properties.Settings.Default.Wartezeit = Convert.ToInt32(txtWartezeit.Text);
-                if (txtListeneinträge.Text != $"{Properties.Settings.Default.Listenleinträge}") Properties.Settings.Default.Listenleinträge = Convert.ToInt32(txtListeneinträge.Text);
+                if (txtListeneinträge.Text != $"{Properties.Settings.Default.Listeneinträge}") Properties.Settings.Default.Listeneinträge = Convert.ToInt32(txtListeneinträge.Text);
                 Properties.Settings.Default.Save();
                 Close();
 
